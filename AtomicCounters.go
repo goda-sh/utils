@@ -3,8 +3,8 @@ package utils
 import "sync/atomic"
 
 var (
-	// Counters holds a slice of all active counters
-	Counters = map[string]*AtomicCounter{}
+	// counters holds a slice of all active counters
+	counters = map[string]*AtomicCounter{}
 )
 
 // AtomicCounter is the counting instance
@@ -45,14 +45,14 @@ func (ac *AtomicCounter) Get() int64 {
 
 // AtomicCount creates or increases/decreases a counter
 func AtomicCount(token string, count int64) int64 {
-	if counter, ok := Counters[token]; ok {
+	if counter, ok := counters[token]; ok {
 		return counter.Add(count)
 	}
-	Counters[token] = NewAtomicCounter(token, count)
-	return Counters[token].Count
+	counters[token] = NewAtomicCounter(token, count)
+	return counters[token].Count
 }
 
-// AtomicCounters handles multiple counters at once
+// Atomiccounters handles multiple counters at once
 func AtomicCounters(tokens []string, count int64) {
 	for _, token := range tokens {
 		AtomicCount(token, count)
@@ -61,15 +61,15 @@ func AtomicCounters(tokens []string, count int64) {
 
 // AddAtomicCallback adds a callback function to an atomic counter
 func AddAtomicCallback(token string, fn func(*AtomicCounter)) bool {
-	if _, ok := Counters[token]; !ok {
-		Counters[token] = NewAtomicCounter(token, 0)
+	if _, ok := counters[token]; !ok {
+		counters[token] = NewAtomicCounter(token, 0)
 	}
-	return Counters[token].AddCallback(fn)
+	return counters[token].AddCallback(fn)
 }
 
 // GetAtomicCount returns a counters value
 func GetAtomicCount(token string) int64 {
-	if counter, ok := Counters[token]; ok {
+	if counter, ok := counters[token]; ok {
 		return counter.Get()
 	}
 	return 0
@@ -77,6 +77,6 @@ func GetAtomicCount(token string) int64 {
 
 // GetAtomicCounter returns the AutomicCounter instance
 func GetAtomicCounter(token string) (atomic *AtomicCounter, ok bool) {
-	atomic, ok = Counters[token]
+	atomic, ok = counters[token]
 	return
 }
