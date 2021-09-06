@@ -52,7 +52,7 @@ func AtomicCount(token string, count int64) int64 {
 	return counters[token].Count
 }
 
-// Atomiccounters handles multiple counters at once
+// AtomicCounters handles multiple counters at once
 func AtomicCounters(tokens []string, count int64) {
 	for _, token := range tokens {
 		AtomicCount(token, count)

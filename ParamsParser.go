@@ -11,22 +11,22 @@ type DefaultParams map[string]interface{}
 
 // Params is a wrapper for all params
 type Params struct {
-	Params map[string]*param
+	Params map[string]*Param
 }
 
 // Add adds a key/value pair for a param to the params map
 // Allows for chaining
-func (p *Params) Add(key string, value *param) *Params {
+func (p *Params) Add(key string, value *Param) *Params {
 	p.Params[key] = value
 	return p
 }
 
 // Get returns a param based on string key
-func (p *Params) Get(key string) *param {
+func (p *Params) Get(key string) *Param {
 	if param, ok := p.Params[key]; ok {
 		return param
 	}
-	return &param{} // Return an empty param
+	return &Param{} // Return an empty param
 }
 
 // Has checks if a param exists based on string key
@@ -35,27 +35,26 @@ func (p *Params) Has(key string) bool {
 	return ok
 }
 
-// ParamParser generates a slice of param's with default values
-// func ParamParser(args map[string]interface{}, params map[string]interface{}) *Params {
+// ParamsParser generates a slice of param's with default values
 func ParamsParser(maps ...map[string]interface{}) *Params {
-	result := &Params{map[string]*param{}}
+	result := &Params{map[string]*Param{}}
 	for _, params := range maps {
 		for key, value := range params {
 			if !result.Has(key) {
-				result.Add(key, &param{value})
+				result.Add(key, &Param{value})
 			}
 		}
 	}
 	return result
 }
 
-// param is the param passed to a task
-type param struct {
+// Param is the param passed to a task
+type Param struct {
 	Value interface{}
 }
 
 // String returns the param as a string
-func (p *param) String() string {
+func (p *Param) String() string {
 	switch value := p.Value.(type) {
 	case string:
 		return value
@@ -69,7 +68,7 @@ func (p *param) String() string {
 }
 
 // Strings returns the param as a slice of strings
-func (p *param) Strings() []string {
+func (p *Param) Strings() []string {
 	strings := []string{}
 	switch value := p.Value.(type) {
 	case []interface{}:
@@ -90,7 +89,7 @@ func (p *param) Strings() []string {
 }
 
 // Ints returns the param as a slice of int64
-func (p *param) Ints() []int64 {
+func (p *Param) Ints() []int64 {
 	ints := []int64{}
 	switch value := p.Value.(type) {
 	case []interface{}:
@@ -123,7 +122,7 @@ func (p *param) Ints() []int64 {
 }
 
 // Floats returns the param as a slice of float64
-func (p *param) Floats() []float64 {
+func (p *Param) Floats() []float64 {
 	floats := []float64{}
 	switch value := p.Value.(type) {
 	case []interface{}:
@@ -157,7 +156,7 @@ func (p *param) Floats() []float64 {
 
 // Int64 returns the value as an int64 or defaults back to
 // the provided default int
-func (p *param) Int64() int64 {
+func (p *Param) Int64() int64 {
 	switch value := p.Value.(type) {
 	case string:
 		if i, err := strconv.Atoi(value); err == nil {
@@ -177,7 +176,7 @@ func (p *param) Int64() int64 {
 
 // Float64 returns the value as an float64 or defaults back to
 // the provided default float64
-func (p *param) Float64() float64 {
+func (p *Param) Float64() float64 {
 	switch value := p.Value.(type) {
 	case string:
 		if f, err := strconv.ParseFloat(value, 64); err == nil {
@@ -197,7 +196,7 @@ func (p *param) Float64() float64 {
 
 // Bool returns the value as bool or defaults back to
 // the provided default bool
-func (p *param) Bool() bool {
+func (p *Param) Bool() bool {
 	switch value := p.Value.(type) {
 	case string:
 		if f, err := strconv.ParseBool(value); err == nil {
